@@ -28,16 +28,16 @@ const SUIT_SYMBOLS = {
   spades: '♠'
 };
 
-const ZOOTOPIA_CHARACTERS: Record<number, string> = {
-  1: 'Judy',
-  2: 'Nick',
-  3: 'Bogo',
-  4: 'Lionheart',
-  5: 'Clawhauser',
-  6: 'Flash',
-  7: 'Gazelle',
-  8: 'Mr. Big',
-  9: 'Bellwether'
+const ZOOTOPIA_CHARACTERS: Record<number, { name: string; seed: string }> = {
+  1: { name: 'Judy Hopps', seed: 'judy' },
+  2: { name: 'Nick Wilde', seed: 'nick' },
+  3: { name: 'Chief Bogo', seed: 'bogo' },
+  4: { name: 'Mayor Lionheart', seed: 'lion' },
+  5: { name: 'Clawhauser', seed: 'donut' },
+  6: { name: 'Flash', seed: 'sloth' },
+  7: { name: 'Gazelle', seed: 'gazelle' },
+  8: { name: 'Mr. Big', seed: 'mouse' },
+  9: { name: 'Bellwether', seed: 'sheep' }
 };
 
 interface CardComponentProps {
@@ -48,7 +48,7 @@ interface CardComponentProps {
 
 const CardComponent: React.FC<CardComponentProps> = ({ card, isUsed, onClick }) => {
   const isRed = card.suit === 'hearts' || card.suit === 'diamonds';
-  const character = ZOOTOPIA_CHARACTERS[card.value];
+  const charData = ZOOTOPIA_CHARACTERS[card.value];
   
   // Display 'A' for 1
   const displayValue = card.value === 1 ? 'A' : card.value;
@@ -74,16 +74,29 @@ const CardComponent: React.FC<CardComponentProps> = ({ card, isUsed, onClick }) 
         <span className="text-[10px] opacity-50">{SUIT_SYMBOLS[card.suit]}</span>
       </div>
 
-      {/* Character Name Background */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <span className="text-zinc-200/40 font-serif italic text-4xl sm:text-5xl font-black uppercase rotate-[-35deg] whitespace-nowrap">
-          {character}
-        </span>
+      {/* Character Illustration */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4 opacity-10">
+        <img 
+          src={`https://picsum.photos/seed/${charData.seed}/200/200`}
+          alt={charData.name}
+          className="w-full h-full object-cover rounded-full grayscale mix-blend-multiply"
+          referrerPolicy="no-referrer"
+        />
       </div>
 
-      {/* Center Suit */}
-      <div className={`relative z-10 text-4xl sm:text-6xl ${isRed ? 'text-rose-600' : 'text-zinc-900'} drop-shadow-sm`}>
-        {SUIT_SYMBOLS[card.suit]}
+      {/* Center Avatar */}
+      <div className="relative z-10 flex flex-col items-center gap-2">
+        <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 p-0.5 overflow-hidden shadow-inner ${isRed ? 'border-rose-200' : 'border-zinc-200'}`}>
+          <img 
+            src={`https://picsum.photos/seed/${charData.seed}/100/100`}
+            alt={charData.name}
+            className="w-full h-full object-cover rounded-full"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+        <div className={`text-2xl sm:text-3xl ${isRed ? 'text-rose-600' : 'text-zinc-900'} drop-shadow-sm`}>
+          {SUIT_SYMBOLS[card.suit]}
+        </div>
       </div>
 
       {/* Bottom Right Value */}
@@ -93,8 +106,8 @@ const CardComponent: React.FC<CardComponentProps> = ({ card, isUsed, onClick }) 
       </div>
 
       {/* Character Label */}
-      <div className={`absolute bottom-8 w-full text-center text-[10px] font-bold uppercase tracking-widest ${isRed ? 'text-rose-400' : 'text-zinc-400'}`}>
-        {character}
+      <div className={`absolute bottom-4 w-full text-center text-[8px] sm:text-[10px] font-bold uppercase tracking-widest ${isRed ? 'text-rose-400' : 'text-zinc-400'}`}>
+        {charData.name}
       </div>
     </motion.div>
   );
@@ -296,7 +309,18 @@ export default function App() {
   }, [gameState.currentCards, usedCardIds, showHelp, showHistory]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-4 sm:p-8 max-w-4xl mx-auto">
+    <div className="min-h-screen flex flex-col items-center p-4 sm:p-8 max-w-4xl mx-auto relative overflow-hidden">
+      {/* Decorative Stickers */}
+      <div className="absolute -top-10 -left-10 w-40 h-40 opacity-10 rotate-12 pointer-events-none">
+        <img src="https://picsum.photos/seed/judy/200/200" alt="" className="rounded-full grayscale" referrerPolicy="no-referrer" />
+      </div>
+      <div className="absolute -bottom-10 -right-10 w-48 h-48 opacity-10 -rotate-12 pointer-events-none">
+        <img src="https://picsum.photos/seed/nick/200/200" alt="" className="rounded-full grayscale" referrerPolicy="no-referrer" />
+      </div>
+      <div className="absolute top-1/2 -left-20 w-32 h-32 opacity-5 rotate-45 pointer-events-none">
+        <img src="https://picsum.photos/seed/sloth/200/200" alt="" className="rounded-full grayscale" referrerPolicy="no-referrer" />
+      </div>
+
       {/* Header */}
       <header className="w-full flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
